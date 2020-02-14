@@ -1,6 +1,6 @@
 # Gradients as Features for Deep Representation Learning
 
-This is the code repository for the [paper](https://openreview.net/pdf?id=BkeoaeHKDS) "Gradients as Features for Deep Representation Learning" published as a conference paper at ICLR 2020.
+This is the code repository for ["Gradients as Features for Deep Representation Learning"](https://openreview.net/pdf?id=BkeoaeHKDS) published as a conference paper at ICLR 2020.
 
 ## This repository is under construction.
 
