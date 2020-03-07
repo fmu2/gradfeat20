@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from util import NTKConv2d, NTKLinear
+from util import *
 
 LEAK = 0.01   # for Jenson-Shannon BiGAN
 # LEAK = 0.2    # for Wasserstein BiGAN

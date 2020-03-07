@@ -173,8 +173,7 @@ def merge_batchnorm(conv2d, batchnorm):
   return fused_conv2d
 
 
-def load_data(dataset, batch_size=64, normalize=False):
-  """ Constructs data loader."""
+def load_data(dataset, path, batch_size=64, normalize=False):
   if normalize:
     # Wasserstein BiGAN is trained on normalized data.
     transform = transforms.Compose([
@@ -185,17 +184,19 @@ def load_data(dataset, batch_size=64, normalize=False):
     transform = transforms.ToTensor()
 
   if dataset == 'svhn':
-    train_set = SVHN('~/torch/data/SVHN', split='extra', transform=transform, download=True)
-    val_set = SVHN('~/torch/data/SVHN', split='test', transform=transform, download=True)
+    train_set = SVHN(path, split='extra', transform=transform, download=True)
+    val_set = SVHN(path, split='test', transform=transform, download=True)
 
   elif dataset == 'cifar10':
-    train_set = CIFAR10('~/torch/data/CIFAR10', train=True, transform=transform, download=True)
-    val_set = CIFAR10('~/torch/data/CIFAR10', train=False, transform=transform, download=True)
+    train_set = CIFAR10(path, train=True, transform=transform, download=True)
+    val_set = CIFAR10(path, train=False, transform=transform, download=True)
 
   elif dataset == 'cifar100':
-    train_set = CIFAR100('~/torch/data/CIFAR10', train=True, transform=transform, download=True)
-    val_set = CIFAR100('~/torch/data/CIFAR10', train=False, transform=transform, download=True)
+    train_set = CIFAR100(path, train=True, transform=transform, download=True)
+    val_set = CIFAR100(path, train=False, transform=transform, download=True)
 
-  train_loader = data.DataLoader(train_set, batch_size, shuffle=True, num_workers=12)
-  val_loader = data.DataLoader(val_set, 1, shuffle=False, num_workers=1, pin_memory=True)
+  train_loader = data.DataLoader(
+    train_set, batch_size, shuffle=True, num_workers=12)
+  val_loader = data.DataLoader(
+    val_set, 1, shuffle=False, num_workers=1, pin_memory=True)
   return train_loader, val_loader
