@@ -1,4 +1,4 @@
-import time, argparse, torch
+import time, configargparse, torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
@@ -8,7 +8,10 @@ import torch.backends.cudnn as cudnn
 
 
 def parser_args():
-  parser = argparse.ArgumentParser(description='Ablation study')
+  parser = configargparse.ArgParser('BiGAN experiments')
+  parser.add('-c', '--config', required=True, is_config_file=True, 
+                      help='config file')
+  
   parser.add_argument('--gpu', type=int, default=0,
                       help='gpu instance to use (default: 0)')
   parser.add_argument('--seed', type=int, default=1818,
