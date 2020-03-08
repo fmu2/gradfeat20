@@ -11,7 +11,7 @@ def parser_args():
   parser = configargparse.ArgParser('BiGAN experiments')
   parser.add('-c', '--config', required=True, is_config_file=True, 
                       help='config file')
-  
+
   parser.add_argument('--gpu', type=int, default=0,
                       help='gpu instance to use (default: 0)')
   parser.add_argument('--seed', type=int, default=1818,
@@ -43,6 +43,9 @@ def parser_args():
                       help='by which learning rate is halved (default: 20000)')
 
   # network
+  parser.add_argument('--mode', type=str, default='full',
+                      choices={'full', 'actv', 'grad'}, 
+                      help='features to use (default: full)')
   parser.add_argument('--fnet_path', type=str, 
                       help='path to load fnet')
   parser.add_argument('--hnet_path', type=str, 
@@ -79,7 +82,8 @@ class AverageMeter(object):
     self.avg = self.sum / self.count
 
 
-def train(device, loader, model, optimizer, niter, stepsize, losses, it=0):
+def train(device, loader, model, mode, 
+  optimizer, niter, stepsize, losses, it=0):
   batch_time = AverageMeter()
   data_time = AverageMeter()
   end = time.time()
@@ -98,17 +102,17 @@ def train(device, loader, model, optimizer, niter, stepsize, losses, it=0):
 
     x, y = x.to(device), y.to(device)
     
-    ### proposed model
-    logits, jvp = model(x)
-    logits = logits + jvp
-
-    ### gradient baseline (second term in proposed model)
-    # _, jvp = model(x)
-    # logits = jvp
-
-    ### activation baseline (first term in proposed model)
-    ### fine-tuning
-    # logits = model(x)
+    if mode == 'full':
+      # proposed model
+      logits, jvp = model(x)
+      logits = logits + jvp
+    elif mode == 'grad':
+      # gradient baseline (second term in proposed model)
+      _, jvp = model(x)
+      logits = jvp
+    else:
+      # activation baseline or fine-tuning (first term in proposed model)
+      logits = model(x)
 
     loss = nn.CrossEntropyLoss()(logits, y)
     optimizer.zero_grad()
@@ -135,7 +139,7 @@ def train(device, loader, model, optimizer, niter, stepsize, losses, it=0):
   return curr_iter
 
 
-def evaluate(device, loader, model):
+def evaluate(device, loader, model, mode):
   model.eval()
   ncorr = 0
 
@@ -143,17 +147,17 @@ def evaluate(device, loader, model):
     x, y = x.to(device), y.to(device)
 
     with torch.no_grad():
-      ### proposed model
-      logits, jvp = model(x)
-      logits = logits + jvp
-
-      ### gradient baseline (second term in proposed model)
-      # _, jvp = model(x)
-      # logits = jvp
-
-      ### activation baseline (first term in proposed model)
-      ### fine-tuning
-      # logits = model(x)
+      if mode == 'full':
+        # proposed model
+        logits, jvp = model(x)
+        logits = logits + jvp
+      elif mode == 'grad':
+        # gradient baseline (second term in proposed model)
+        _, jvp = model(x)
+        logits = jvp
+      else:
+        # activation baseline or fine-tuning (first term in proposed model)
+        logits = model(x)
 
       pred = torch.argmax(logits.detach_(), dim=1)
       ncorr += (pred == y).sum()
