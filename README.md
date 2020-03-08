@@ -5,10 +5,10 @@
 ## This code repository is under construction.
 
 ## Overview
-This repository contains code for reproducing the results in ["Gradients as Features for Deep Representation Learning"](https://openreview.net/pdf?id=BkeoaeHKDS) published as a conference paper at ICLR 2020. The code has been tested in an conda environment with Python 3 and PyTorch >= 1.3.
+This repository contains code for reproducing the results in [Gradients as Features for Deep Representation Learning](https://openreview.net/pdf?id=BkeoaeHKDS) published as a conference paper at ICLR 2020. The code has been tested in an conda environment with Python 3 and PyTorch >= 1.3.
 
 ## Quick Start
-* Download the base networks [here](pages.cs.wisc.edu/~fmu/gradfeat20/pretrained). We currently support BiGAN/ALI encoder pre-trained on CIFAR-10/-100 or SVHN as the base network. 
+* Download the base networks [here](http://pages.cs.wisc.edu/~fmu/gradfeat20/pretrained). We currently support BiGAN/ALI encoder pre-trained on CIFAR-10/-100 or SVHN as the base network. In the download link, "ali" stands for ALI trained on Jenson-Shannon divergence, and "wali" stands for ALI trained on Wasserstein distance. See (and star :) ) our [repository](https://github.com/fmu2/Wasserstein-BiGAN) on Wasserstein BiGAN.
 
 - File names with a trailing zero correspond to randomly initialized networks (e.g., fnet0.pt, std_hnet0.pt, etc.).
 - File names with a trailing one correspond to networks pre-trained from generative modeling (e.g., fnet1.pt, std_hnet1.pt, etc.).
